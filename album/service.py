@@ -1,16 +1,17 @@
+"""module for service classes and funcs"""
+from django.conf import settings
 from django_filters import rest_framework as filters
-
-from album.models import Photo
+from django.core.exceptions import ValidationError
 
 
 class CharFilterInFilter(filters.BaseInFilter, filters.CharFilter):
+    """Char filter"""
     pass
 
 
-class PhotoFilter(filters.FilterSet):
-    tags = CharFilterInFilter(field_name='tags_name', lookup_expr='in')
-    album = CharFilterInFilter(field_name='album', lookup_expr='eq')
-
-    class Meta:
-        model = Photo
-        fields = ['tags', 'album']
+def validate_size_image(fieldfileobj):
+    """Validate image size"""
+    filesize = fieldfileobj.size
+    print(filesize)
+    if filesize > settings.PHOTO_SIZE_LIMIT_MB*1024*1024:
+        raise ValidationError(f'Max file size is {str(settings.PHOTO_SIZE_LIMIT_MB)}Mb')

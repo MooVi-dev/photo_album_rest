@@ -1,12 +1,12 @@
+"""module for models of project"""
 from django.contrib.auth.models import AbstractUser
-from django.db import models
 
 
 class User(AbstractUser):
-    pass
+    """Users for prev extend"""
 
     class Meta:
+        """meta"""
         db_table = "t_users"
         verbose_name = "Пользователи"
         verbose_name_plural = "Пользователи"
-

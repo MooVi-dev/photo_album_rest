@@ -1,4 +1,4 @@
-from django import forms
+"""module for admin panel"""
 from django.contrib import admin
 from django.utils.safestring import mark_safe
 
@@ -15,16 +15,18 @@ class TagAdmin(admin.ModelAdmin):
 @admin.register(Photo)
 class PhotoAdmin(admin.ModelAdmin):
     """Фотографии"""
-    list_display = ("title", )
+    list_display = ("title", 'album', 'created_at')
     list_display_links = ("title",)
 
 
 class PhotosInline(admin.TabularInline):
+    """Таблица с фотографиями для отображения на форме альбома"""
     model = Photo
     extra = 1
     readonly_fields = ("get_image",)
 
     def get_image(self, obj):
+        """Отображение фотографий"""
         return mark_safe(f'<img src={obj.image.url} width="100" height="110"')
 
     get_image.short_description = "Фотография"
@@ -33,6 +35,6 @@ class PhotosInline(admin.TabularInline):
 @admin.register(Album)
 class AlbumAdmin(admin.ModelAdmin):
     """Альбомы"""
-    list_display = ("name", )
+    list_display = ("name", "creator", "photos_count", )
     list_display_links = ("name",)
     inlines = [PhotosInline]
