@@ -2,6 +2,8 @@
 
 from rest_framework import viewsets, filters
 from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.response import Response
+from rest_framework.views import APIView
 
 from .models import Album, Photo
 from .serializers import (
@@ -13,6 +15,12 @@ from .serializers import (
     PhotoListSerializer,
     AlbumUpdateSerializer,
     PhotoUpdateSerializer)
+
+
+class HelloView(APIView):
+    def get(self, request):
+        content = {'message': 'Hello, World!'}
+        return Response(content)
 
 
 class AlbumViewSet(viewsets.ReadOnlyModelViewSet):

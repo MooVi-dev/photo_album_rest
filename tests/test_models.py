@@ -1,20 +1,31 @@
 """module for tests"""
 from datetime import datetime
+from io import BytesIO
 
-from django.contrib.auth import get_user_model, authenticate
+from PIL import Image
+from django.contrib.auth import get_user_model
 from django.core.files import File
 from django.test import TestCase
 
 from album.models import Album, Tag, Photo
 
-TEST_IMAGE = 'media/photos/test.jpg'
+TEST_IMAGE = 'media/test.jpg'
+
+
+def get_image(name='test.png', ext='png', size=(50, 50), color=(256, 0, 0)):
+    file_obj = BytesIO()
+    image = Image.new("RGBA", size=size, color=color)
+    image.save(file_obj, ext)
+    file_obj.seek(0)
+    return File(file_obj, name=name)
 
 
 class SigninTest(TestCase):
     """Тестирование авторизации и создания пользователей"""
-    def setUp(self):
-        self.user = get_user_model().objects.create_user(username='user0', password='user0123456')
-        self.user.save()
+    @classmethod
+    def setUpTestData(cls):
+        cls.user = get_user_model().objects.create_user(username='user0', password='user0123456')
+        cls.user.save()
 
     def tearDown(self):
         self.user.delete()
@@ -23,10 +34,11 @@ class SigninTest(TestCase):
 class AlbumModelTest(TestCase):
     """Тестирование модели Альбомов"""
 
-    def setUp(self):
-        self.user = get_user_model().objects.create_user(username='user0', password='user0123456')
-        self.user.save()
-        self.album = Album.objects.create(name='Test album', creator=self.user,
+    @classmethod
+    def setUpTestData(cls):
+        cls.user = get_user_model().objects.create_user(username='user0', password='user0123456')
+        cls.user.save()
+        cls.album = Album.objects.create(name='Test album', creator=cls.user,
                                           created_at=datetime.now())
 
     def tearDown(self):
@@ -65,10 +77,11 @@ class AlbumModelTest(TestCase):
 class TagModelTest(TestCase):
     """Тестирование модели Тегов"""
 
-    def setUp(self):
-        self.user = get_user_model().objects.create_user(username='user0', password='user0123456')
-        self.user.save()
-        self.tag = Tag.objects.create(name='Test tag')
+    @classmethod
+    def setUpTestData(cls):
+        cls.user = get_user_model().objects.create_user(username='user0', password='user0123456')
+        cls.user.save()
+        cls.tag = Tag.objects.create(name='Test tag')
 
     def tearDown(self):
         self.tag.delete()
@@ -88,17 +101,19 @@ class TagModelTest(TestCase):
 class PhotoModelTest(TestCase):
     """Тестирование модели Фотографий"""
 
-    def setUp(self):
-        self.user = get_user_model().objects.create_user(username='user0', password='user0123456')
-        self.user.save()
-        self.album = Album.objects.create(name='Test album', creator=self.user,
+    @classmethod
+    def setUpTestData(cls):
+        user = get_user_model().objects.create_user(username='user0', password='user0123456')
+        cls.user = user
+        album = Album.objects.create(name='Test album', creator=user,
                                           created_at=datetime.now())
-        self.tag = Tag.objects.create(name='Test tag')
+        cls.album = album
+        cls.tag = Tag.objects.create(name='Test tag')
         file = open(TEST_IMAGE, 'rb')
-        file = File(file)
-        self.photo = Photo.objects.create(name='Test photo', image=file,
-                                          album=self.album, created_at=datetime.now())
-        self.photo.tags.add(self.tag)
+        cls.file = File(file=file)
+        cls.photo = Photo.objects.create(name='Test photo', image=File(file=file),
+                                          album=album, created_at=datetime.now())
+        cls.photo.tags.add(cls.tag)
 
     def tearDown(self):
         self.photo.delete()
@@ -134,3 +149,11 @@ class PhotoModelTest(TestCase):
         inst = Photo.objects.get(pk=self.photo.pk)
         field = inst.tags.all()[0]
         self.assertEqual(field, self.tag)
+
+    def test_image(self):
+        """Проверка картинок"""
+        inst = Photo.objects.get(pk=self.photo.pk)
+        field = inst.image
+        print(field.name)
+        # print(self.file)
+        # self.assertEqual(field, self.file)

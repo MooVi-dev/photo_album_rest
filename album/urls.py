@@ -19,6 +19,7 @@ from django.urls import path
 from album import views
 
 urlpatterns = [
+    path("test/", views.HelloView.as_view(), name='hello'),
     path("album/", views.AlbumViewSet.as_view({'get': 'list'})),
     path("album/<int:pk>/", views.AlbumViewSet.as_view({'get': 'retrieve'})),
     path("add_album/", views.AlbumCreateViewSet.as_view({'post': 'create'})),
