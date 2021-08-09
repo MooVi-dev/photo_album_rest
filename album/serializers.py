@@ -58,7 +58,7 @@ class PhotoCreateSerializer(serializers.ModelSerializer):
     class Meta:
         """meta"""
         model = Photo
-        fields = ('album', 'image', 'tags', 'title', )
+        fields = ('album', 'image', 'tags', 'name', )
 
 
 class PhotoUpdateSerializer(serializers.ModelSerializer):
@@ -67,7 +67,7 @@ class PhotoUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         """meta"""
         model = Photo
-        fields = ('tags', 'title', )
+        fields = ('tags', 'name', )
 
 
 class PhotoDetailSerializer(serializers.ModelSerializer):

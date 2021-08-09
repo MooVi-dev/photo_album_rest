@@ -43,7 +43,7 @@ class Tag(models.Model):
 
 class Photo(models.Model):
     """Фотографии"""
-    title = models.CharField("Заголовок", max_length=100)
+    name = models.CharField("Заголовок", max_length=100)
     image = models.ImageField("Изображение", upload_to="photos/",
                               validators=[
                                   FileExtensionValidator(allowed_extensions=['jpeg', 'jpg', 'png'],
@@ -57,7 +57,7 @@ class Photo(models.Model):
     created_at = models.DateField("Дата создания", default=date.today)
 
     def __str__(self):
-        return str(self.title)
+        return str(self.name)
 
     class Meta:
         """meta"""

@@ -15,8 +15,8 @@ class TagAdmin(admin.ModelAdmin):
 @admin.register(Photo)
 class PhotoAdmin(admin.ModelAdmin):
     """Фотографии"""
-    list_display = ("title", 'album', 'created_at')
-    list_display_links = ("title",)
+    list_display = ("name", 'album', 'created_at')
+    list_display_links = ("name",)
 
 
 class PhotosInline(admin.TabularInline):
