@@ -22,12 +22,14 @@ urlpatterns = [
     path("test/", views.HelloView.as_view(), name='hello'),
     path("album/", views.AlbumViewSet.as_view({'get': 'list'})),
     path("album/<int:pk>/", views.AlbumViewSet.as_view({'get': 'retrieve'})),
+    path("delete_album/<int:pk>/", views.AlbumDeleteViewSet.as_view()),
     path("add_album/", views.AlbumCreateViewSet.as_view({'post': 'create'})),
     path("update_album/<int:pk>/", views.AlbumCreateViewSet.as_view({'post': 'update'})),
     path("photo/", views.PhotoViewSet.as_view({'get': 'list'})),
     path("photo/<int:pk>/", views.PhotoViewSet.as_view({'get': 'retrieve'})),
     path("add_photo/", views.PhotoCreateViewSet.as_view({'post': 'create'})),
     path("update_photo/", views.PhotoCreateViewSet.as_view({'post': 'update'})),
+    path("delete_photo/<int:pk>/", views.PhotoDeleteViewSet.as_view()),
 ]
 
 

@@ -1,9 +1,10 @@
 """module for controllers"""
-
-from rest_framework import viewsets, filters
+from django.http import Http404
+from rest_framework import viewsets, filters, status, generics, permissions
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework import mixins
 
 from .models import Album, Photo
 from .serializers import (
@@ -42,14 +43,27 @@ class AlbumViewSet(viewsets.ReadOnlyModelViewSet):
 
 
 class AlbumCreateViewSet(viewsets.ModelViewSet):
-    """Создание альбома"""
+    """Редактирование альбома"""
 
     def get_serializer_class(self):
         if self.action == 'create':
             return AlbumCreateSerializer
         if self.action == "update":
             return AlbumUpdateSerializer
-        return None
+        # return None
+
+
+class AlbumDeleteViewSet(mixins.DestroyModelMixin, generics.GenericAPIView):
+    """Удаление альбома"""
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def get_queryset(self):
+        user = self.request.user
+        album = Album.objects.filter(creator=user)
+        return album
+
+    def delete(self, request, *args, **kwargs):
+        return self.destroy(request, *args, **kwargs)
 
 
 class PhotoViewSet(viewsets.ReadOnlyModelViewSet):
@@ -80,3 +94,16 @@ class PhotoCreateViewSet(viewsets.ModelViewSet):
         if self.action == "update":
             return PhotoUpdateSerializer
         return None
+
+
+class PhotoDeleteViewSet(mixins.DestroyModelMixin, generics.GenericAPIView):
+    """Удаление альбома"""
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def get_queryset(self):
+        user = self.request.user
+        album = Photo.objects.filter(album__creator=user)
+        return album
+
+    def delete(self, request, *args, **kwargs):
+        return self.destroy(request, *args, **kwargs)

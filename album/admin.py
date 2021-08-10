@@ -15,7 +15,7 @@ class TagAdmin(admin.ModelAdmin):
 @admin.register(Photo)
 class PhotoAdmin(admin.ModelAdmin):
     """Фотографии"""
-    list_display = ("name", 'album', 'created_at')
+    list_display = ('id', 'name', 'album', 'created_at')
     list_display_links = ("name",)
 
 
